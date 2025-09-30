@@ -11,21 +11,20 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    targetRevision: 7.7.5 # pin the chart version you tested
+    targetRevision: 7.7.5
     helm:
-      # Use valuesObject to avoid quoting/escaping pitfalls
+      releaseName: argocd # <<< important: adopt existing names
       valuesObject:
         server:
-          enabled: true
           service:
-            type: ClusterIP # no NodePort/LB; Ingress handles traffic
+            type: ClusterIP
           ingress:
-            enabled: false # Ingress is defined in your repo (argocd-ingress.yaml)
+            enabled: false # Ingress is managed by your own YAML
           extraArgs:
-            - --insecure # Argo UI serves HTTP behind your edge TLS
+            - --insecure
         configs:
           params:
-            server.insecure: 'true' # same as --insecure, via configmap
+            server.insecure: 'true'
   syncPolicy:
     automated:
       prune: true
