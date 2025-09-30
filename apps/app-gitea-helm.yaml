@@ -11,21 +11,25 @@ spec:
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*' # keep or pin
+    targetRevision: '*' # or pin a version
     helm:
       releaseName: gitea
       values: |
+        # Force all Bitnami subcharts to use GHCR instead of Docker Hub
+        global:
+          imageRegistry: ghcr.io
+
         ingress:
-          enabled: false          # we keep our own Ingress manifest
+          enabled: false            # we keep our own Ingress manifest
 
         gitea:
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"    # TLS ends on Proxmox NGINX
+              PROTOCOL: "http"      # TLS terminates on the Proxmox NGINX
 
-        # OPTIONAL: you can disable valkey to simplify
+        # (Optional) simplify by disabling Valkey while you bootstrap
         # valkey:
         #   enabled: false
 
@@ -38,9 +42,8 @@ spec:
         postgresql:
           enabled: true
           image:
-            registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "16"            # stable, widely available
+            tag: "16"
             pullPolicy: IfNotPresent
           primary:
             persistence:
@@ -50,3 +53,9 @@ spec:
 
         postgresql-ha:
           enabled: false
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
