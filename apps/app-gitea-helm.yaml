@@ -11,29 +11,37 @@ spec:
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: "*"
+    targetRevision: '*' # or pin a version you prefer
     helm:
       releaseName: gitea
       values: |
         ingress:
-          enabled: true
-          className: nginx
-          hosts:
-            - host: gitea-labnum.aphp.fr
-              paths:
-                - path: /
-                  pathType: Prefix
+          enabled: false              # we bring our own Ingress below
+
+        gitea:
+          config:
+            server:
+              ROOT_URL: "https://gitea-labnum.aphp.fr/"
+              DOMAIN: "gitea-labnum.aphp.fr"
+              PROTOCOL: "http"        # TLS is terminated on the Proxmox NGINX
+
         persistence:
           enabled: true
-          size: 20Gi
+          size: 10Gi
+          accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
+
         postgresql:
           enabled: true
           primary:
             persistence:
+              enabled: true
+              size: 10Gi
               storageClass: longhorn
-        redis:
-          enabled: true
+
+        postgresql-ha:
+          enabled: false              # <- IMPORTANT
+
   syncPolicy:
     automated:
       prune: true

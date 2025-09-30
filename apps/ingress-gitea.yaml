@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gitea-http
+  namespace: gitea
+  labels:
+    app.kubernetes.io/name: gitea
+  annotations:
+    # TLS is terminated on the Proxmox NGINX, so no HTTPS at the cluster ingress
+    nginx.ingress.kubernetes.io/ssl-redirect: 'false'
+    nginx.ingress.kubernetes.io/backend-protocol: 'HTTP'
+    # Allow bigger pushes (repos, attachments)
+    nginx.ingress.kubernetes.io/proxy-body-size: '200m'
+    # If you also want to restrict at the cluster level (optional):
+    # nginx.ingress.kubernetes.io/whitelist-source-range: "164.2.0.0/16,10.10.0.0/24,51.178.174.75/32"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: gitea-labnum.aphp.fr
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                # Verify the exact name below with:  kubectl -n gitea get svc
+                name: gitea-http
+                port:
+                  number: 3000
