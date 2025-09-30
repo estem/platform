@@ -35,6 +35,9 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
+        global:
+          security:
+            allowInsecureImages: true
         # PostgreSQL subchart – force GHCR image here
         postgresql:
           enabled: true
