@@ -16,8 +16,6 @@ spec:
       releaseName: gitea
       dependencyUpdate: true # <- ensure subcharts refresh
       parameters: # keep these (but values below will be enough)
-        - name: global.imageRegistry
-          value: ghcr.io
         - name: postgresql.image.registry
           value: ghcr.io
         - name: postgresql.image.repository
@@ -48,12 +46,12 @@ spec:
             registry: ghcr.io
             repository: bitnami/postgresql
             tag: "16"
+            pullPolicy: IfNotPresent
           primary:
             persistence:
               enabled: true
               size: 10Gi
               storageClass: longhorn
-
         postgresql-ha:
           enabled: false
   syncPolicy:
