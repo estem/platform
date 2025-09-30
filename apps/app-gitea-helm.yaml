@@ -43,18 +43,18 @@ spec:
           enabled: true
           fullnameOverride: gitea-postgresql
           image:
-            registry: ghcr.io
+            registry: docker.io           # <- switch back to Docker Hub
             repository: bitnami/postgresql
-            tag: "16"
+            tag: "16"                     # <- rolling major tag; very reliable
             pullPolicy: IfNotPresent
           primary:
             persistence:
               enabled: true
               size: 10Gi
               storageClass: longhorn
-
         postgresql-ha:
           enabled: false
+
   syncPolicy:
     automated:
       prune: true
