@@ -11,19 +11,23 @@ spec:
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*' # or pin a version you prefer
+    targetRevision: '*' # keep or pin
     helm:
       releaseName: gitea
       values: |
         ingress:
-          enabled: false              # we bring our own Ingress below
+          enabled: false          # we keep our own Ingress manifest
 
         gitea:
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"        # TLS is terminated on the Proxmox NGINX
+              PROTOCOL: "http"    # TLS ends on Proxmox NGINX
+
+        # OPTIONAL: you can disable valkey to simplify
+        # valkey:
+        #   enabled: false
 
         persistence:
           enabled: true
@@ -34,9 +38,10 @@ spec:
         postgresql:
           enabled: true
           image:
-            registry: docker.io         # or try ghcr.io if Docker Hub is blocked/rate-limited
+            registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "16.4.0"
+            tag: "16"            # stable, widely available
+            pullPolicy: IfNotPresent
           primary:
             persistence:
               enabled: true
@@ -44,11 +49,4 @@ spec:
               storageClass: longhorn
 
         postgresql-ha:
-          enabled: false              # <- IMPORTANT
-
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
+          enabled: false
