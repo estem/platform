@@ -36,22 +36,23 @@ spec:
           storageClass: longhorn
 
         global:
-          security:
-            allowInsecureImages: true
+          imagePullSecrets:
+            - dockerhub-cred
         # PostgreSQL subchart – force GHCR image here
         postgresql:
           enabled: true
           fullnameOverride: gitea-postgresql
           image:
-            registry: docker.io           # <- switch back to Docker Hub
+            registry: docker.io
             repository: bitnami/postgresql
-            tag: "16"                     # <- rolling major tag; very reliable
+            tag: "16"
             pullPolicy: IfNotPresent
           primary:
             persistence:
               enabled: true
               size: 10Gi
               storageClass: longhorn
+
         postgresql-ha:
           enabled: false
 
