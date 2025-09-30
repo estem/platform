@@ -11,20 +11,20 @@ spec:
   source:
     repoURL: https://kubernetes.github.io/ingress-nginx
     chart: ingress-nginx
-    targetRevision: "*"
+    targetRevision: '*'
     helm:
       releaseName: ingress-nginx
       values: |
         controller:
           replicaCount: 3
           nodeSelector:
-            ingress-ready: "true"
-          publishService:
-            enabled: true
+            ingress-ready: "true"     # you already labeled the 3 workers
           service:
             type: LoadBalancer
             loadBalancerIP: 10.10.0.101
             externalTrafficPolicy: Local
+          publishService:
+            enabled: true
   syncPolicy:
     automated:
       prune: true
