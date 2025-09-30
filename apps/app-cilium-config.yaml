@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cilium-config
+  namespace: argocd
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  source:
+    repoURL: REPO_URL   # ⬅️ même dépôt
+    targetRevision: HEAD
+    path: ressources/platform/cilium/config
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

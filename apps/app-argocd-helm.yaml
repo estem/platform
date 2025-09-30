@@ -1,0 +1,33 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-helm
+  namespace: argocd
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  source:
+    repoURL: https://argoproj.github.io/argo-helm
+    chart: argo-cd
+    targetRevision: "*"
+    helm:
+      releaseName: argocd
+      values: |
+        server:
+          extraArgs:
+            - --insecure
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hosts:
+              - argocd-labnum.aphp.fr
+            paths:
+              - /
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

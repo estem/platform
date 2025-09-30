@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: jenkins-helm
+  namespace: argocd
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: jenkins
+  source:
+    repoURL: https://charts.jenkins.io
+    chart: jenkins
+    targetRevision: "*"
+    helm:
+      releaseName: jenkins
+      values: |
+        controller:
+          serviceType: ClusterIP
+          jenkinsUrl: https://jenkins-labnum.aphp.fr
+          ingress:
+            enabled: true
+            ingressClassName: nginx
+            hostName: jenkins-labnum.aphp.fr
+          persistence:
+            enabled: true
+            storageClass: longhorn
+            size: 20Gi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

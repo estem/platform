@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: harbor-helm
+  namespace: argocd
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: harbor
+  source:
+    repoURL: https://helm.goharbor.io
+    chart: harbor
+    targetRevision: "*"
+    helm:
+      releaseName: harbor
+      values: |
+        expose:
+          type: ingress
+          tls:
+            enabled: false
+          ingress:
+            className: nginx
+            hosts:
+              core: harbor-labnum.aphp.fr
+            controller: default
+            annotations:
+              nginx.ingress.kubernetes.io/proxy-body-size: "0"
+        externalURL: https://harbor-labnum.aphp.fr
+        persistence:
+          enabled: true
+          resourcePolicy: "keep"
+          persistentVolumeClaim:
+            registry:
+              size: 50Gi
+              storageClass: longhorn
+            chartmuseum:
+              enabled: false
+            jobservice:
+              size: 5Gi
+              storageClass: longhorn
+            database:
+              size: 10Gi
+              storageClass: longhorn
+            redis:
+              size: 2Gi
+              storageClass: longhorn
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

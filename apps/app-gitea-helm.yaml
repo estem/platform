@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: gitea-helm
+  namespace: argocd
+spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea
+  source:
+    repoURL: https://dl.gitea.com/charts/
+    chart: gitea
+    targetRevision: "*"
+    helm:
+      releaseName: gitea
+      values: |
+        ingress:
+          enabled: true
+          className: nginx
+          hosts:
+            - host: gitea-labnum.aphp.fr
+              paths:
+                - path: /
+                  pathType: Prefix
+        persistence:
+          enabled: true
+          size: 20Gi
+          storageClass: longhorn
+        postgresql:
+          enabled: true
+          primary:
+            persistence:
+              storageClass: longhorn
+        redis:
+          enabled: true
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
