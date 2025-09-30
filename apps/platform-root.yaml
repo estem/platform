@@ -9,9 +9,9 @@ spec:
     server: https://kubernetes.default.svc
     namespace: argocd
   source:
-    repoURL: REPO_URL   # ⬅️ Remplacer par l'URL Git de ce dépôt
-    targetRevision: HEAD
-    path: ressources/platform/apps
+    repoURL: https://github.com/estem/platform.git
+    targetRevision: main
+    path: apps
     directory:
       recurse: true
   syncPolicy:

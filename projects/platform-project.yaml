@@ -4,15 +4,18 @@ metadata:
   name: platform
   namespace: argocd
 spec:
-  description: "Plateforme cluster (Cilium, Longhorn, Ingress, Argo, Gitea, Harbor, Jenkins)"
+  description: 'Plateforme cluster (Cilium, Longhorn, Ingress, Argo, Gitea, Harbor, Jenkins)'
   sourceRepos:
-    - '*'
+    - '*' # (vous pouvez restreindre plus tard)
   destinations:
     - server: https://kubernetes.default.svc
-      namespace: '*'
+      namespace: '*' # (resserrer plus tard si besoin)
   clusterResourceWhitelist:
     - group: '*'
       kind: '*'
   namespaceResourceWhitelist:
     - group: '*'
       kind: '*'
+  # (optionnel) orphelins marqués dans l’UI
+  orphanedResources:
+    warn: true
