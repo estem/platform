@@ -11,10 +11,11 @@ spec:
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*' # keep or pin a version later
+    targetRevision: '*' # pin later once stable
     helm:
       releaseName: gitea
-      parameters:
+      dependencyUpdate: true # <- ensure subcharts refresh
+      parameters: # keep these (but values below will be enough)
         - name: global.imageRegistry
           value: ghcr.io
         - name: postgresql.image.registry
@@ -32,7 +33,7 @@ spec:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"
+              PROTOCOL: "http"   # TLS at Proxmox NGINX
 
         persistence:
           enabled: true
@@ -42,6 +43,10 @@ spec:
 
         postgresql:
           enabled: true
+          image:                 # <- put the image override here too
+            registry: ghcr.io
+            repository: bitnami/postgresql
+            tag: "16"
           primary:
             persistence:
               enabled: true
@@ -50,3 +55,9 @@ spec:
 
         postgresql-ha:
           enabled: false
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
