@@ -4,17 +4,26 @@ metadata:
   name: gitea-helm
   namespace: argocd
 spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*'
+    targetRevision: '*' # keep or pin a version later
     helm:
       releaseName: gitea
+      parameters:
+        - name: global.imageRegistry
+          value: ghcr.io
+        - name: postgresql.image.registry
+          value: ghcr.io
+        - name: postgresql.image.repository
+          value: bitnami/postgresql
+        - name: postgresql.image.tag
+          value: '16'
       values: |
-        # Force all Bitnami images to ghcr.io
-        global:
-          imageRegistry: ghcr.io
-
         ingress:
           enabled: false
 
@@ -31,14 +40,8 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # 🔽 Make Postgres pull from GHCR explicitly
         postgresql:
           enabled: true
-          image:
-            registry: ghcr.io
-            repository: bitnami/postgresql
-            tag: "16"
-            pullPolicy: IfNotPresent
           primary:
             persistence:
               enabled: true
@@ -47,9 +50,3 @@ spec:
 
         postgresql-ha:
           enabled: false
-  syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
-    syncOptions:
-      - CreateNamespace=true
