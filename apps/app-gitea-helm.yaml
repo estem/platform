@@ -43,6 +43,7 @@ spec:
 
         postgresql:
           enabled: true
+          fullnameOverride: gitea-postgresql 
           image:                 # <- put the image override here too
             registry: ghcr.io
             repository: bitnami/postgresql
