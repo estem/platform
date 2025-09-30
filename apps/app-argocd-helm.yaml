@@ -11,20 +11,19 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    targetRevision: "*"
+    targetRevision: 7.7.5 # pin a version you’re happy with
     helm:
-      releaseName: argocd
-      values: |
-        server:
-          extraArgs:
-            - --insecure
-          ingress:
-            enabled: true
-            ingressClassName: nginx
-            hosts:
-              - argocd-labnum.aphp.fr
-            paths:
-              - /
+      parameters:
+        # IMPORTANT: let your standalone YAML own the Ingress
+        - name: server.ingress.enabled
+          value: 'false'
+
+        # TLS is terminated on the Proxmox NGINX reverse-proxy
+        - name: configs.params.server\.insecure
+          value: 'true'
+        # (optional) also pass the flag via extraArgs
+        - name: server.extraArgs[0]
+          value: --insecure
   syncPolicy:
     automated:
       prune: true
