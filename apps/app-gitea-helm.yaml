@@ -33,6 +33,10 @@ spec:
 
         postgresql:
           enabled: true
+          image:
+            registry: docker.io         # or try ghcr.io if Docker Hub is blocked/rate-limited
+            repository: bitnami/postgresql
+            tag: "16.4.0"
           primary:
             persistence:
               enabled: true
