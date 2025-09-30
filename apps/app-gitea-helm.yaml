@@ -11,22 +11,18 @@ spec:
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*' # pin later once stable
+    targetRevision: '*'
     helm:
       releaseName: gitea
-      dependencyUpdate: true # <- ensure subcharts refresh
-      parameters: # keep these (but values below will be enough)
-        - name: postgresql.image.registry
-          value: ghcr.io
-        - name: postgresql.image.repository
-          value: bitnami/postgresql
-        - name: postgresql.image.tag
-          value: '16'
+      dependencyUpdate: true
       values: |
         ingress:
           enabled: false
 
         gitea:
+          # Optional: disable cache to simplify subcharts while we fix DB
+          cache:
+            enabled: false
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
@@ -39,10 +35,11 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
+        # PostgreSQL subchart – force GHCR image here
         postgresql:
           enabled: true
-          fullnameOverride: gitea-postgresql 
-          image:                 # <- put the image override here too
+          fullnameOverride: gitea-postgresql
+          image:
             registry: ghcr.io
             repository: bitnami/postgresql
             tag: "16"
@@ -52,6 +49,7 @@ spec:
               enabled: true
               size: 10Gi
               storageClass: longhorn
+
         postgresql-ha:
           enabled: false
   syncPolicy:
