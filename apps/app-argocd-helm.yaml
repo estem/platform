@@ -11,19 +11,21 @@ spec:
   source:
     repoURL: https://argoproj.github.io/argo-helm
     chart: argo-cd
-    targetRevision: 7.7.5 # pin a version you’re happy with
+    targetRevision: 7.7.5 # pin the chart version you tested
     helm:
-      parameters:
-        # IMPORTANT: let your standalone YAML own the Ingress
-        - name: server.ingress.enabled
-          value: 'false'
-
-        # TLS is terminated on the Proxmox NGINX reverse-proxy
-        - name: configs.params.server\.insecure
-          value: 'true'
-        # (optional) also pass the flag via extraArgs
-        - name: server.extraArgs[0]
-          value: --insecure
+      # Use valuesObject to avoid quoting/escaping pitfalls
+      valuesObject:
+        server:
+          enabled: true
+          service:
+            type: ClusterIP # no NodePort/LB; Ingress handles traffic
+          ingress:
+            enabled: false # Ingress is defined in your repo (argocd-ingress.yaml)
+          extraArgs:
+            - --insecure # Argo UI serves HTTP behind your edge TLS
+        configs:
+          params:
+            server.insecure: 'true' # same as --insecure, via configmap
   syncPolicy:
     automated:
       prune: true
