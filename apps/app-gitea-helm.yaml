@@ -4,34 +4,26 @@ metadata:
   name: gitea-helm
   namespace: argocd
 spec:
-  project: platform
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: gitea
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*' # or pin a version
+    targetRevision: '*'
     helm:
       releaseName: gitea
       values: |
-        # Force all Bitnami subcharts to use GHCR instead of Docker Hub
+        # Force all Bitnami images to ghcr.io
         global:
           imageRegistry: ghcr.io
 
         ingress:
-          enabled: false            # we keep our own Ingress manifest
+          enabled: false
 
         gitea:
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"      # TLS terminates on the Proxmox NGINX
-
-        # (Optional) simplify by disabling Valkey while you bootstrap
-        # valkey:
-        #   enabled: false
+              PROTOCOL: "http"
 
         persistence:
           enabled: true
@@ -39,9 +31,11 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
+        # 🔽 Make Postgres pull from GHCR explicitly
         postgresql:
           enabled: true
           image:
+            registry: ghcr.io
             repository: bitnami/postgresql
             tag: "16"
             pullPolicy: IfNotPresent
