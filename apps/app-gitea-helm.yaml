@@ -44,7 +44,7 @@ spec:
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "16"          # if this still fails, pin a full tag (see note below)
+            # tag: "16"          # if this still fails, pin a full tag (see note below)
             pullPolicy: IfNotPresent
           primary:
             persistence:
@@ -61,3 +61,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - Replace=true
