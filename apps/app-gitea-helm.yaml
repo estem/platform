@@ -9,25 +9,20 @@ spec:
     server: https://kubernetes.default.svc
     namespace: gitea
   source:
-    repoURL: https://dl.gitea.com/charts/
-    chart: gitea
-    targetRevision: '*'
     helm:
-      releaseName: gitea
       dependencyUpdate: true
       values: |
         ingress:
           enabled: false
 
         gitea:
-          # Optional: disable cache to simplify subcharts while we fix DB
           cache:
             enabled: false
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"   # TLS at Proxmox NGINX
+              PROTOCOL: "http"
 
         persistence:
           enabled: true
@@ -35,17 +30,18 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
+        # allow chart to accept non-original registry (GHCR)
         global:
-          imagePullSecrets:
-            - dockerhub-cred
-        # PostgreSQL subchart – force GHCR image here
+          security:
+            allowInsecureImages: true
+
         postgresql:
           enabled: true
           fullnameOverride: gitea-postgresql
           image:
-            registry: docker.io
+            registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "16"
+            tag: "16"            # if this still fails, see note below
             pullPolicy: IfNotPresent
           primary:
             persistence:
