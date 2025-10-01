@@ -40,7 +40,7 @@ spec:
 
         postgresql:
           enabled: true
-          fullnameOverride: gitea-pg-3
+          fullnameOverride: gitea-pg-4
           image:
             registry: docker.io
             repository: bitnami/postgresql
