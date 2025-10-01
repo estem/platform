@@ -17,44 +17,39 @@ spec:
       dependencyUpdate: true
       values: |
         ingress:
-          enabled: false
+          enabled: false   # we keep our own Ingress manifest
 
+        # Gitea app configuration
         gitea:
-          # Optional: keep Valkey enabled; not relevant to PG pull
           config:
+            # Force SQLite
+            database:
+              DB_TYPE: sqlite3
+              PATH: /data/gitea/gitea.db
+            # Keep cache/sessions local (no valkey/redis needed)
+            cache:
+              ADAPTER: memory
+            session:
+              PROVIDER: file
+
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"
+              PROTOCOL: "http"   # TLS is at the Proxmox reverse-proxy
 
+        # Persistent volume for /data (SQLite file lives here)
         persistence:
           enabled: true
           size: 10Gi
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # Do NOT set global.imageRegistry. Just provide the pull secret.
-        global:
-          imagePullSecrets:
-            - name: ghcr-cred
-
+        # Disable external databases/caches
         postgresql:
-          enabled: true
-          fullnameOverride: gitea-pg-6            # <- new name = new STS/PVC
-          image:
-            registry: ghcr.io
-            repository: bitnami/postgresql
-            tag: "17.6.0-debian-12-r4"
-            pullPolicy: IfNotPresent
-            pullSecrets:
-              - name: ghcr-cred
-          primary:
-            persistence:
-              enabled: true
-              size: 10Gi
-              storageClass: longhorn
-
+          enabled: false
         postgresql-ha:
+          enabled: false
+        valkey-cluster:
           enabled: false
   syncPolicy:
     automated:
