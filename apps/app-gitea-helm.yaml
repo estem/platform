@@ -47,7 +47,7 @@ spec:
             # pick a real tag you can pull (examples that usually exist on Docker Hub):
             # "17.6.0-debian-12-rX"  (replace X with the current revision)
             # or "17.6.0"
-            tag: "17.6.0"
+            tag: "17.6.0-debian-12-r4"
             pullPolicy: IfNotPresent
           primary:
             persistence:
