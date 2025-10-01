@@ -32,6 +32,7 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
+        # Make all subcharts pull from GHCR using our secret
         global:
           imageRegistry: ghcr.io
           imagePullSecrets:
@@ -41,12 +42,15 @@ spec:
 
         postgresql:
           enabled: true
-          fullnameOverride: gitea-pg-3       # force a NEW name so Helm recreates it
+          fullnameOverride: gitea-pg-3
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "17"                       # GHCR tag that exists
+            tag: "17"
             pullPolicy: IfNotPresent
+            # Redundant but explicit for the subchart:
+            pullSecrets:
+              - name: ghcr-cred
           primary:
             persistence:
               enabled: true
@@ -55,7 +59,6 @@ spec:
 
         postgresql-ha:
           enabled: false
-
   syncPolicy:
     automated:
       prune: true
