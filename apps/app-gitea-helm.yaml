@@ -4,8 +4,16 @@ metadata:
   name: gitea-helm
   namespace: argocd
 spec:
+  project: platform
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: gitea
   source:
+    repoURL: https://dl.gitea.com/charts/
+    chart: gitea
+    targetRevision: '*'
     helm:
+      releaseName: gitea
       dependencyUpdate: true
       values: |
         ingress:
@@ -24,7 +32,6 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # apply to subcharts too
         global:
           imageRegistry: ghcr.io
           security:
@@ -32,12 +39,11 @@ spec:
 
         postgresql:
           enabled: true
-          # *** change this to force a new object name ***
-          fullnameOverride: gitea-pg-3
+          fullnameOverride: gitea-pg-3       # force a NEW name so Helm recreates it
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "17"                  # pick a real GHCR tag; "17" is widely available
+            tag: "17"                       # GHCR tag that exists
             pullPolicy: IfNotPresent
           primary:
             persistence:
@@ -47,6 +53,7 @@ spec:
 
         postgresql-ha:
           enabled: false
+
   syncPolicy:
     automated:
       prune: true
