@@ -24,7 +24,7 @@ spec:
             enabled: false
 
           # ✅ put it here (sibling of "config")
-          additionalEnv:
+          env:
             - name: GITEA__database__DB_TYPE
               value: sqlite3
             - name: GITEA__database__PATH
