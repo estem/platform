@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://dl.gitea.com/charts/
     chart: gitea
-    targetRevision: '*'
+    targetRevision: '12.3.0'
     helm:
       releaseName: gitea
       dependencyUpdate: true
