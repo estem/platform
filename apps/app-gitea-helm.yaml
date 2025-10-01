@@ -17,37 +17,27 @@ spec:
       dependencyUpdate: true
       values: |
         ingress:
-          enabled: false   # we keep our own Ingress manifest
+          enabled: false
 
-        # Gitea app configuration
         gitea:
+          cache:
+            enabled: false         # disable Valkey subchart
           config:
-            # Force SQLite
-            database:
+            database:              # be explicit: use SQLite
               DB_TYPE: sqlite3
               PATH: /data/gitea/gitea.db
-            # Keep cache/sessions local (no valkey/redis needed)
-            cache:
-              ADAPTER: memory
-            session:
-              PROVIDER: file
-
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"   # TLS is at the Proxmox reverse-proxy
+              PROTOCOL: "http"     # TLS is at your Proxmox reverse-proxy
 
-        # Persistent volume for /data (SQLite file lives here)
         persistence:
           enabled: true
           size: 10Gi
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # Disable external databases/caches
         postgresql:
-          enabled: false
-        postgresql-ha:
           enabled: false
         valkey-cluster:
           enabled: false
