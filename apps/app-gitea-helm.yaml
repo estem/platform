@@ -46,7 +46,7 @@ spec:
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "17.6.0-debian-11-r0"
+            tag: "17.6.0"
             pullPolicy: IfNotPresent
             pullSecrets:              # <-- strings, NOT objects
               - ghcr-cred
