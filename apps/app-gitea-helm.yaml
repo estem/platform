@@ -20,9 +20,8 @@ spec:
           enabled: false
 
         gitea:
-          # disable valkey/redis cache (removes the Bitnami image check that blocked you)
           cache:
-            enabled: false
+            enabled: false         # ← disable Valkey to avoid the Bitnami image check
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
@@ -35,14 +34,21 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # Do NOT force an image registry; let the chart defaults pick a working tag
-        # global:
-        #   imageRegistry:
-        #   imagePullSecrets: []
+        # ONLY give a pull secret globally; do NOT set global.imageRegistry
+        global:
+          imagePullSecrets:
+            - name: ghcr-cred
 
         postgresql:
           enabled: true
-          fullnameOverride: gitea-pg-5
+          fullnameOverride: gitea-pg-6    # ← new name so we get a new StatefulSet/PVC
+          image:
+            registry: ghcr.io
+            repository: bitnami/postgresql
+            tag: "17.6.0-debian-12-r4"    # your requested tag
+            pullPolicy: IfNotPresent
+            pullSecrets:                  # belt & braces for the subchart
+              - name: ghcr-cred
           primary:
             persistence:
               enabled: true
