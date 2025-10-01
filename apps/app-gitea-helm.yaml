@@ -21,20 +21,27 @@ spec:
 
         gitea:
           cache:
-            enabled: false         # disable Valkey subchart
+            enabled: false
+
+          # ✅ put it here (sibling of "config")
+          additionalEnv:
+            - name: GITEA__database__DB_TYPE
+              value: sqlite3
+            - name: GITEA__database__PATH
+              value: /data/gitea/gitea.db
+
           config:
-            database:              # be explicit: use SQLite
+            database:
               DB_TYPE: sqlite3
               PATH: /data/gitea/gitea.db
+              HOST: ""         # explicitly blank so no accidental PG host remains
+              USER: ""
+              PASSWD: ""
+              NAME: gitea
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
-              PROTOCOL: "http"     # TLS is at your Proxmox reverse-proxy
-            additionalEnv:
-              - name: GITEA__database__DB_TYPE
-                value: sqlite3
-              - name: GITEA__database__PATH
-                value: /data/gitea/gitea.db
+              PROTOCOL: "http"
 
         persistence:
           enabled: true
