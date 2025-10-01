@@ -16,8 +16,9 @@ spec:
           enabled: false
 
         gitea:
-          cache:
-            enabled: false
+          # optional while DB is down; can leave valkey enabled too
+          # cache:
+          #   enabled: false
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
@@ -30,10 +31,12 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # allow chart to accept non-original registry (GHCR)
+        # <<< KEY PARTS
         global:
+          imageRegistry: ghcr.io
           security:
             allowInsecureImages: true
+        # >>>
 
         postgresql:
           enabled: true
@@ -41,7 +44,7 @@ spec:
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "16"            # if this still fails, see note below
+            tag: "16"          # if this still fails, pin a full tag (see note below)
             pullPolicy: IfNotPresent
           primary:
             persistence:
