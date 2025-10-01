@@ -20,6 +20,9 @@ spec:
           enabled: false
 
         gitea:
+          # 👇 disable valkey (redis) cache to bypass the Bitnami image check
+          cache:
+            enabled: false
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
@@ -34,7 +37,7 @@ spec:
 
         # Apply to all subcharts
         global:
-          imageRegistry: ghcr.io 
+          imageRegistry: ghcr.io
           imagePullSecrets:
             - name: ghcr-cred
 
