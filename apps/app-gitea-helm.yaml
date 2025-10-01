@@ -34,19 +34,16 @@ spec:
 
         # Apply to all subcharts
         global:
-          imageRegistry: docker.io  
+          imageRegistry: ghcr.io 
           imagePullSecrets:
-            - name: dockerhub-cred
+            - name: ghcr-cred
 
         postgresql:
           enabled: true
           fullnameOverride: gitea-pg-4
           image:
-            registry: docker.io
+            registry: ghcr.io
             repository: bitnami/postgresql
-            # pick a real tag you can pull (examples that usually exist on Docker Hub):
-            # "17.6.0-debian-12-rX"  (replace X with the current revision)
-            # or "17.6.0"
             tag: "17.6.0-debian-12-r4"
             pullPolicy: IfNotPresent
           primary:
