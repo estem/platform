@@ -34,6 +34,7 @@ spec:
 
         # Apply to all subcharts
         global:
+          imageRegistry: docker.io  
           imagePullSecrets:
             - name: dockerhub-cred
 
