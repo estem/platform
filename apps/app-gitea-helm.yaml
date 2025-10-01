@@ -20,8 +20,7 @@ spec:
           enabled: false
 
         gitea:
-          cache:
-            enabled: false         # ← disable Valkey to avoid the Bitnami image check
+          # Optional: keep Valkey enabled; not relevant to PG pull
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
@@ -34,20 +33,20 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # ONLY give a pull secret globally; do NOT set global.imageRegistry
+        # Do NOT set global.imageRegistry. Just provide the pull secret.
         global:
           imagePullSecrets:
             - name: ghcr-cred
 
         postgresql:
           enabled: true
-          fullnameOverride: gitea-pg-6    # ← new name so we get a new StatefulSet/PVC
+          fullnameOverride: gitea-pg-6            # <- new name = new STS/PVC
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            tag: "17.6.0-debian-12-r4"    # your requested tag
+            tag: "17.6.0-debian-12-r4"
             pullPolicy: IfNotPresent
-            pullSecrets:                  # belt & braces for the subchart
+            pullSecrets:
               - name: ghcr-cred
           primary:
             persistence:
