@@ -30,6 +30,11 @@ spec:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
               DOMAIN: "gitea-labnum.aphp.fr"
               PROTOCOL: "http"     # TLS is at your Proxmox reverse-proxy
+            additionalEnv:
+              - name: GITEA__database__DB_TYPE
+                value: sqlite3
+              - name: GITEA__database__PATH
+                value: /data/gitea/gitea.db
 
         persistence:
           enabled: true
@@ -38,6 +43,8 @@ spec:
           storageClass: longhorn
 
         postgresql:
+          enabled: false
+        postgresql-ha:
           enabled: false
         valkey-cluster:
           enabled: false
