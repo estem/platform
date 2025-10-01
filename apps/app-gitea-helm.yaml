@@ -4,10 +4,6 @@ metadata:
   name: gitea-helm
   namespace: argocd
 spec:
-  project: platform
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: gitea
   source:
     helm:
       dependencyUpdate: true
@@ -16,9 +12,6 @@ spec:
           enabled: false
 
         gitea:
-          # optional while DB is down; can leave valkey enabled too
-          # cache:
-          #   enabled: false
           config:
             server:
               ROOT_URL: "https://gitea-labnum.aphp.fr/"
@@ -31,20 +24,20 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # <<< KEY PARTS
+        # apply to subcharts too
         global:
           imageRegistry: ghcr.io
           security:
             allowInsecureImages: true
-        # >>>
 
         postgresql:
           enabled: true
-          fullnameOverride: gitea-pg-2
+          # *** change this to force a new object name ***
+          fullnameOverride: gitea-pg-3
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
-            # tag: "16"          # if this still fails, pin a full tag (see note below)
+            tag: "17"                  # pick a real GHCR tag; "17" is widely available
             pullPolicy: IfNotPresent
           primary:
             persistence:
@@ -54,7 +47,6 @@ spec:
 
         postgresql-ha:
           enabled: false
-
   syncPolicy:
     automated:
       prune: true
