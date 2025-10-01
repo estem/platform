@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/estem/platform.git
     targetRevision: main
-    path: ressources/platform/apps
+    path: apps
     directory:
       recurse: true
   syncPolicy:
