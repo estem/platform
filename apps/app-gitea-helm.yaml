@@ -32,11 +32,11 @@ spec:
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
 
-        # Make all subcharts pull from GHCR using our secret
+        # Apply to all subcharts
         global:
           imageRegistry: ghcr.io
           imagePullSecrets:
-            - name: ghcr-cred
+            - ghcr-cred               # <-- string, NOT {name: ...}
           security:
             allowInsecureImages: true
 
@@ -48,9 +48,8 @@ spec:
             repository: bitnami/postgresql
             tag: "17"
             pullPolicy: IfNotPresent
-            # Redundant but explicit for the subchart:
-            pullSecrets:
-              - name: ghcr-cred
+            pullSecrets:              # <-- strings, NOT objects
+              - ghcr-cred
           primary:
             persistence:
               enabled: true
