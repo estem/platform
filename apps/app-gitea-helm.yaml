@@ -40,7 +40,7 @@ spec:
 
         postgresql:
           enabled: true
-          fullnameOverride: gitea-pg-4
+          fullnameOverride: gitea-pg-5
           image:
             registry: ghcr.io
             repository: bitnami/postgresql
