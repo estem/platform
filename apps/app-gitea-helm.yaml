@@ -45,6 +45,7 @@ spec:
 
         persistence:
           enabled: true
+          existingClaim: gitea-shared-storage
           size: 10Gi
           accessModes: ["ReadWriteOnce"]
           storageClass: longhorn
