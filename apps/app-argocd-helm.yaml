@@ -25,6 +25,8 @@ spec:
         configs:
           params:
             server.insecure: 'true'
+          cm:
+            url: https://argocd-labnum.aphp.fr
   syncPolicy:
     automated:
       prune: true
