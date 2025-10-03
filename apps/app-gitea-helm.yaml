@@ -16,7 +16,7 @@ spec:
     targetRevision: '12.3.0'
     helm:
       releaseName: gitea
-      dependencyUpdate: true
+      # dependencyUpdate: true
       values: |
         ingress:
           enabled: false
