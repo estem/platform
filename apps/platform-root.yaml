@@ -5,12 +5,6 @@ metadata:
   namespace: argocd
 spec:
   project: platform
-  ignoreDifferences:
-    - group: argoproj.io
-      kind: Application
-      jsonPointers:
-        - /metadata/finalizers
-        - /metadata/annotations/argocd.argoproj.io~1manifest-generate-paths
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
