@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://helm.goharbor.io
     chart: harbor
-    targetRevision: "*"
+    targetRevision: '*'
     helm:
       releaseName: harbor
       values: |
@@ -45,6 +45,9 @@ spec:
             redis:
               size: 2Gi
               storageClass: longhorn
+            strategy:
+              type: Recreate
+            replicas: 1
   syncPolicy:
     automated:
       prune: true
