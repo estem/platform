@@ -11,7 +11,7 @@ spec:
   source:
     repoURL: https://github.com/estem/platform.git # ⬅️ même dépôt
     targetRevision: HEAD
-    path: ressources/platform/cilium/config
+    path: platform/cilium/config
   syncPolicy:
     automated:
       prune: true
