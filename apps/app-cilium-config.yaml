@@ -9,7 +9,7 @@ spec:
     server: https://kubernetes.default.svc
     namespace: kube-system
   source:
-    repoURL: REPO_URL   # ⬅️ même dépôt
+    repoURL: https://github.com/estem/platform.git # ⬅️ même dépôt
     targetRevision: HEAD
     path: ressources/platform/cilium/config
   syncPolicy:
